@@ -1,4 +1,4 @@
-MIT License
+MIT License (Attribution Required)
 
 Copyright (c) 2026 Lukas
 
@@ -11,6 +11,12 @@ furnished to do so, subject to the following conditions:
 
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
+
+Any use, distribution, public deployment, or derivative work of this template
+must include clear attribution to Lukas. At minimum, the attribution must state:
+"Based on ResearchProjectTemplate by Lukas." This attribution must appear in a
+reasonable and visible location, such as a README, documentation, about page,
+or equivalent credits section.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,

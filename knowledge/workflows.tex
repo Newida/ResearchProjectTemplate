@@ -1,0 +1,111 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{enumitem}
+\usepackage{hyperref}
+
+\title{How to create a good research project}
+\author{Lukas Theißinger}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Goals}
+Our main goals with research projects are:
+\begin{enumerate}
+	\item Reproducibility
+	\item Testing
+	\item Usability
+\end{enumerate}
+
+The first two ensure correctness of the research and the second one is using the research, because otherwise what was the point of making it in the first place.
+The question is how can we make such code bases?
+
+\section{Project outline}
+We define a project skeleton outline of files and what their purpose are and how to use them.
+\begin{itemize}[leftmargin=*]
+  \item \texttt{configs/}: One JSON file per experiment. These are the single source of truth for experiment parameters.
+  \item \texttt{src/}: Implementation code (config loading, pipeline logic, CLI entrypoint).
+  \item \texttt{tests/}: Automated tests for behavior, edge cases, and deterministic outcomes.
+  \item \texttt{scripts/}: Operational scripts.
+  \item \texttt{outputs/}: Generated experiment result files (not source code).
+  \item \texttt{Makefile}: Unified command interface for install, test, run, and batch workflows.
+\end{itemize}
+
+How the pieces fit together:
+\begin{enumerate}[leftmargin=*]
+  \item Add or modify experiment configs in \texttt{configs/}.
+  \item Run experiments through \texttt{make run <name>} or \texttt{make all}.
+  \item Validate correctness through \texttt{make tests-all}.
+  \item Use output files in \texttt{outputs/} for downstream analysis, plots, and reports.
+\end{enumerate}
+
+\section{Workflows}
+We define workflows that should be intuitive and easy to use.
+
+\subsection{How to Reproduce Results}
+
+Use \texttt{make run} for a single experiment and \texttt{make all} for every experiment config.
+
+\begin{enumerate}[leftmargin=*]
+  \item Install dependencies once:
+\begin{verbatim}
+make install
+\end{verbatim}
+
+  \item Run experiments with explicit names:
+\begin{verbatim}
+make run experiment1
+make run experiment2
+\end{verbatim}
+  This writes outputs to \texttt{outputs/experiment1.json} and \texttt{outputs/experiment2.json}.
+
+  \item Run and reproduce all experiments from \texttt{configs/*.json}:
+\begin{verbatim}
+make run-all
+\end{verbatim}
+  Each config file is executed and checked for deterministic core outputs.
+\end{enumerate}
+
+If you rerun the same config and seed, the core result payload remains deterministic.
+
+\subsection{How to Test}
+\subsubsection{Running tests}
+\begin{enumerate}[leftmargin=*]
+  \item Run static checks:
+\begin{verbatim}
+make test-static
+\end{verbatim}
+  This runs linting and type checks.
+  
+  \item Run normal tests:
+  \begin{verbatim}
+  	make tests-pytest
+  \end{verbatim}
+  This runs pytest and deterministic default-config reproducibility checks.s
+
+  \item Run deterministic reproducibility check (default config):
+\begin{verbatim}
+make test-deterministic
+\end{verbatim}
+
+  \item Run all tests together:
+\begin{verbatim}
+make tests-all
+\end{verbatim}
+  This runs static checks, normal tests, and deterministic checks across all configs.
+\end{enumerate}
+
+\subsubsection{Adding new tests}
+\begin{enumerate}[leftmargin=*]
+  \item Create tests in \texttt{tests/} and use files named \texttt{test\_*.py}.
+  \item Add at least one positive path test and one failure/edge-case test for each new feature.
+  \item For reproducibility-sensitive logic, include a test that asserts identical output for identical seeds/configs.
+\end{enumerate}
+
+\subsection{How to use}
+The code in src/ should be written as a library to use. The experiment code should then be scripts that import stuff from that library to build results.
+
+\end{document}
